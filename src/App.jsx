@@ -81,7 +81,7 @@ const App = () => {
           ref={textRef}
         />
         <button onClick={handleAdd}>Add</button>
-        <ul>
+        <ul className="list-disc">
           {todos.map((t) => (
             <li className="" key={t.id}>
               {t.text}
