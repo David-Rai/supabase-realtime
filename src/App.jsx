@@ -1,5 +1,4 @@
 import React, { useRef } from "react";
-import { Button } from "@/components/ui/button.jsx";
 import supabase from "./supabase";
 import { useState, useEffect } from "react";
 
@@ -81,7 +80,7 @@ const App = () => {
           placeholder="Enter new todo"
           ref={textRef}
         />
-        <Button onClick={handleAdd}>Add</Button>
+        <button onClick={handleAdd}>Add</button>
         <ul>
           {todos.map((t) => (
             <li className="" key={t.id}>
