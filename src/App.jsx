@@ -1,4 +1,5 @@
 import React, { useRef } from "react";
+import { Button } from "@/components/ui/button.jsx";
 import supabase from "./supabase";
 import { useState, useEffect } from "react";
 
@@ -24,7 +25,6 @@ const App = () => {
 
   useEffect(() => {
     getall();
-    
   }, []);
 
   useEffect(() => {
@@ -75,12 +75,13 @@ const App = () => {
     <main className="flex items-center flex-col justify-start pt-32 h-screen w-full">
       <h1 className="text-2xl">Add your todos</h1>
       <div>
-        <input type="text" 
-        className="border-1 rounded-md mx-2 my-6 px-6 py-4"
-        placeholder="Enter new todo" ref={textRef} />
-        <button
-        
-        onClick={handleAdd}>Add</button>
+        <input
+          type="text"
+          className="border-1 rounded-md mx-2 my-6 px-6 py-4"
+          placeholder="Enter new todo"
+          ref={textRef}
+        />
+        <Button onClick={handleAdd}>Add</Button>
         <ul>
           {todos.map((t) => (
             <li className="" key={t.id}>
