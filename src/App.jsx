@@ -1,6 +1,7 @@
 import React, { useRef } from "react";
 import supabase from "./supabase";
 import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
 
 const App = () => {
   const textRef = useRef(null);
@@ -18,7 +19,7 @@ const App = () => {
   //Getting all the previews todos  on initials
   const getall = async () => {
     const res = await supabase.from("todos").select();
-    console.log(res.data);
+    // console.log(res.data);
     setTodos(res.data);
   };
 
@@ -73,14 +74,19 @@ const App = () => {
   return (
     <main className="flex items-center flex-col justify-start pt-32 h-screen w-full">
       <h1 className="text-2xl">Add your todos</h1>
-      <div>
-        <input
-          type="text"
-          className="border-1 rounded-md mx-2 my-6 px-6 py-4"
-          placeholder="Enter new todo"
-          ref={textRef}
-        />
-        <button onClick={handleAdd}>Add</button>
+      <p className="text-gray-500">Realtime global using (Supabase postgres changes)</p>
+      <section>
+        <div className="flex items-center justify-center gap-2 mt-4">
+          <input
+            type="text"
+            className="border-1 rounded-md h-full px-4 py-2"
+            placeholder="Enter new todo"
+            ref={textRef}
+          />
+          <Button
+          className="h-full"
+          onClick={handleAdd}>Add</Button>
+        </div>
         <ul className="list-disc">
           {todos.map((t) => (
             <li className="" key={t.id}>
@@ -88,7 +94,7 @@ const App = () => {
             </li>
           ))}
         </ul>
-      </div>
+      </section>
     </main>
   );
 };
