@@ -1,16 +1,52 @@
-# React + Vite
+# Supabase Realtime features
+- Postgres changes(INSERT,UPDATE,DELETE)
+- Presense (Realtime sync)
+- Boardcast from Database
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Postgres changes
+```bash
 
-Currently, two official plugins are available:
+  useEffect(() => {
+    // Realtime
+    const channel = supabase
+      .channel("todos")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "todos" },
+        (payload) => {
+          const { eventType } = payload;
+          const newRecord = payload.new;
+          const oldRecord = payload.old;
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+          // console.log(payload);
+          console.log("Payload came with this event", eventType);
 
-## React Compiler
+          //Insert todos
+          if (eventType === "INSERT") {
+            return setTodos((prev) => [...prev, newRecord]);
+          }
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+          //Update todos
+          if (eventType === "UPDATE") {
+            return setTodos((prev) =>
+              prev.map((p) => (p.id === newRecord.id ? newRecord : p))
+            );
+          }
 
-## Expanding the ESLint configuration
+          //Delete todos
+          if (eventType === "DELETE") {
+            return setTodos((prev) =>
+              prev.filter((p) => p.id !== newRecord.id)
+            );
+          }
+        }
+      )
+      .subscribe();
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+    //Cleanup functions
+    return () => {
+      //**Very crucials**/
+      supabase.removeChannel(channel);
+    };
+  }, [supabase]);
+```
