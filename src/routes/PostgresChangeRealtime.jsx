@@ -4,7 +4,7 @@ import React, { useEffect } from "react";
 import { useRef, useState } from "react";
 import supabase from "@/config/supabase";
 
-const RealtimeTodo = () => {
+const PostgresChangeRealtime = () => {
   const textRef = useRef(null);
   const [todos, setTodos] = useState([]);
 
@@ -131,4 +131,4 @@ const TodoChild = ({ t, handleDeleteTodo }) => {
   );
 };
 
-export default RealtimeTodo;
+export default PostgresChangeRealtime
