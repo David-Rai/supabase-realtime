@@ -5,14 +5,25 @@ import Home from "./routes/Home";
 import { createBrowserRouter, RouterProvider } from "react-router";
 import ProtectedRoutes from "./routes/ProtectedRoutes";
 import PostgresChangeRealtime from '@/routes/PostgresChangeRealtime'
+import BroadCast from "./routes/BroadCast";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: (
-      <PostgresChangeRealtime/>
-    ),
+      <Home/>
+    )
   },
+  {
+    path:'/postgreschanges',
+    element:(
+      <PostgresChangeRealtime/>
+    )
+  },
+  {
+    path:'/broadcast',
+    element:<BroadCast />
+  }
 ]);
 
 createRoot(document.getElementById("root")).render(

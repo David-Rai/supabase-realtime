@@ -1,9 +1,11 @@
 # Supabase Realtime features
+
 - Postgres changes(INSERT,UPDATE,DELETE)
 - Presense (Realtime sync)
 - Boardcast from Database
 
 ## 1. Postgres changes
+
 ```bash
 
   useEffect(() => {
@@ -49,4 +51,40 @@
       supabase.removeChannel(channel);
     };
   }, [supabase]);
+```
+
+# 2. BroadCast
+
+- Send low-latency messages using the client libs, REST, or your Database
+
+## Creating the broadcast channels and receiving
+
+```bash
+  //******Creating broadcast channel**** */
+  useEffect(() => {
+    const mychannel = supabase.channel("demo");
+
+    mychannel.on(
+      "broadcast",
+      {
+        event: "message",
+      },
+      (payload) => console.log(payload)
+    ).subscribe
+
+    return () => {
+      supabase.removeAllChannels();
+    };
+  }, []);
+```
+
+## Sending via broadcast
+
+```bash
+    //Sending event via broadcast
+    mychannel.current.send({
+      type: "broadcast",
+      event: "message",
+      payload: { message: "hey badar" },
+    })
 ```
