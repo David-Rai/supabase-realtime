@@ -30,16 +30,33 @@ const RealtimeTodo = () => {
   //*****Subscribing to the postgres table changes**** */
   useEffect(() => {
     console.log("Subscribing to the postgres changes");
-    const changes = supabase.channel("postgres-table-changes").on(
-      "postgres_changes",
-      {
-        schema: "public",
-        event: "*",
-      },
-      (payload) => console.log(payload)
-    ).subscribe()
+    const changes = supabase
+      .channel("postgres-table-changes")
+      .on(
+        "postgres_changes",
+        {
+          schema: "public",
+          event: "*",
+        },
+        (payload) => {
+          console.log("payload", payload);
+          const event_type = payload.eventType;
+          const {new:newTodo}=payload
 
-  },[]);
+          switch (event_type) {
+            case "INSERT":
+              console.log("New todo inserted",newTodo);
+              setTodos([...todos,newTodo])
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeAllChannels();
+      console.log("Unsubscribed from all channels");
+    };
+  }, []);
 
   //****Handling Add Todos** */
   const handleAddTodo = async () => {
@@ -47,7 +64,7 @@ const RealtimeTodo = () => {
     if (!text || text === null) return console.log("no text");
 
     const res = await supabase.from("todos").insert({ text });
-    console.log("Todo is inserted", res);
+    // console.log("Todo is inserted", res);
   };
 
   return (
