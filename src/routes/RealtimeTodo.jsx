@@ -42,13 +42,14 @@ const RealtimeTodo = () => {
           console.log("payload", payload);
           const event_type = payload.eventType;
           const { new: newTodo } = payload;
+          const { old: oldTodo } = payload;
 
           switch (event_type) {
             case "INSERT":
               setTodos((prev) => [...prev, newTodo]);
               break;
             case "DELETE":
-              setTodos((prev) => prev.filter((p) => p.id !== newTodo.id));
+              setTodos((prev) => prev.filter((p) => p.id !== oldTodo.id));
               break;
             default:
               console.log("Event", event_type);
@@ -70,7 +71,17 @@ const RealtimeTodo = () => {
 
     const res = await supabase.from("todos").insert({ text });
     // console.log("Todo is inserted", res);
+    textRef.current.value = "";
   };
+
+  //****Delete todo*** */
+  const handleDeleteTodo=async (todo_id)=>{
+    console.log("Delete this shit",todo_id)
+    const res=await supabase.from('todos')
+    .delete()
+    .eq('id',todo_id)
+
+  }
 
   return (
     <main className="h-screen w-full flex items-center flex-col justify-center">
@@ -96,7 +107,7 @@ const RealtimeTodo = () => {
       {/* Rendering all the todos */}
       <section className="h-[60%] w-full px-5 list-decimal overflow-x-scroll">
         {todos.length > 0 ? (
-          todos.map((t) => <TodoChild key={t.id} t={t} />)
+          todos.map((t) => <TodoChild key={t.id} t={t} handleDeleteTodo={handleDeleteTodo} />)
         ) : (
           <h1>No previous todos</h1>
         )}
@@ -105,11 +116,17 @@ const RealtimeTodo = () => {
   );
 };
 
-const TodoChild = ({ t }) => {
+const TodoChild = ({ t, handleDeleteTodo }) => {
   return (
     <div className="flex gap-2 bg-gray-200 mt-5 rounded-md p-5 w-full">
       <h5>{t.id}.</h5>
       <h3>{t.text}</h3>
+      <button
+        onClick={() => handleDeleteTodo(t.id)}
+        className="bg-red-500 text-white p-2 rounded-md cursor-pointer"
+      >
+        Delete
+      </button>
     </div>
   );
 };
