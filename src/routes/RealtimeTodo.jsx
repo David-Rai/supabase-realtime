@@ -41,12 +41,17 @@ const RealtimeTodo = () => {
         (payload) => {
           console.log("payload", payload);
           const event_type = payload.eventType;
-          const {new:newTodo}=payload
+          const { new: newTodo } = payload;
 
           switch (event_type) {
             case "INSERT":
-              console.log("New todo inserted",newTodo);
-              setTodos([...todos,newTodo])
+              setTodos((prev) => [...prev, newTodo]);
+              break;
+            case "DELETE":
+              setTodos((prev) => prev.filter((p) => p.id !== newTodo.id));
+              break;
+            default:
+              console.log("Event", event_type);
           }
         }
       )
@@ -69,24 +74,43 @@ const RealtimeTodo = () => {
 
   return (
     <main className="h-screen w-full flex items-center flex-col justify-center">
-      <div className="flex flex-col gap-2">
+      {/* Heading */}
+      <h1 className="text-3xl">Realtime todos</h1>
+      {/* Input field + button  */}
+      <div className="flex w-full gap-2 items-center justify-center">
         <input
           ref={textRef}
-          className="border-1 border-black px-3 py-4 rounded-md"
+          className="border-1 border-black px-3 py-4 h-[60px] rounded-md"
           type="text"
           placeholder="Add you todos"
         />
-        <button onClick={handleAddTodo}>Add todo</button>
+        <button
+          className="px-3 h-[60px] text-white my-3 cursor-pointer bg-purple-700 
+        transition-all 
+        hover:bg-purple-400 rounded-lg"
+          onClick={handleAddTodo}
+        >
+          Add todo
+        </button>
       </div>
-
-      <ul className="list-decimal">
+      {/* Rendering all the todos */}
+      <section className="h-[60%] w-full px-5 list-decimal overflow-x-scroll">
         {todos.length > 0 ? (
-          todos.map((t) => <li key={t.id}>{t.text}</li>)
+          todos.map((t) => <TodoChild key={t.id} t={t} />)
         ) : (
           <h1>No previous todos</h1>
         )}
-      </ul>
+      </section>
     </main>
+  );
+};
+
+const TodoChild = ({ t }) => {
+  return (
+    <div className="flex gap-2 bg-gray-200 mt-5 rounded-md p-5 w-full">
+      <h5>{t.id}.</h5>
+      <h3>{t.text}</h3>
+    </div>
   );
 };
 
